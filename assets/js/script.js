@@ -128,8 +128,6 @@ for (var i = 0; i < workDayHours.length; i++) {
 
 //cick timeblock to edit text content
 $('.col-10').on('click', 'p', function () {
-    //logs the click to check functionality
-    console.log('clicked');
 
     var text = $(this)
         .text()
