@@ -1,18 +1,3 @@
-//GIVEN I am using a daily planner to create a schedule
-//WHEN I open the planner
-//THEN the current day is displayed at the top of the calendar
-//WHEN I scroll down
-//THEN I am presented with time blocks for standard business hours
-//WHEN I view the time blocks for that day
-//THEN each time block is color-coded to indicate whether it is in the past, present, or future
-//WHEN I click into a time block
-//THEN I can enter an event
-//WHEN I click the save button for that time block
-//THEN the text for that event is saved in local storage
-//WHEN I refresh the page
-//THEN the saved events persist
-
-
 //core features
 //date at the top
 //time blocks for the day (9//5?)
@@ -20,7 +5,6 @@
 //can enter event (text) when clicking onto block
 //press the save button to save to localStorage
 //saved events persist when refreshing
-
 
 
 var currentDayEl = $('#currentDay');
@@ -71,6 +55,7 @@ function auditTimeBlock(timeBlockEventSpace) {
 
 //add time blocks for each hour (3 columns in 9 rows: 9AM to 5PM) format for 9AM is hA
 for (var i = 0; i < workDayHours.length; i++) {
+
     //add div with class row
     var timeBlockRow = $('<div>')
         .addClass('row time-block')
@@ -79,15 +64,18 @@ for (var i = 0; i < workDayHours.length; i++) {
     var timeBlockHour = $('<div>')
         .addClass('col-1 hour')
         .text(workDayHours[i])
-    // .attr('style', 'text-align: right');
 
-    // add 1 div with class time-block
     var timeBlockEventSpace = $('<div>')
-        .addClass('col-10 description')
+        .addClass('col-10')
         .attr({
             id: 'Hour-' + i
         });
 
+    //adds in description of the schedule
+    var userInput = $('<p>')
+        .addClass('description')
+        .text(' ');
+        
     //check time
     auditTimeBlock(timeBlockEventSpace);
 
@@ -109,4 +97,36 @@ for (var i = 0; i < workDayHours.length; i++) {
     $(timeBlockRow).append(timeBlockEventSpace);
     $(timeBlockRow).append(saveBtn);
     $(saveBtn).append(saveIcon);
+    $(timeBlockEventSpace).append(userInput);
 }
+
+
+$('.col-10').on('click', 'p', function () {
+    //logs the click to check functionality
+    console.log('clicked');
+
+    var text = $(this)
+        .text()
+        .trim()
+
+    var textInput = $('<textarea>')
+        .addClass('form-control')
+        .val(text);
+
+    $(this).replaceWith(textInput);
+
+    textInput.trigger('focus');
+});
+
+$('.col-10').on('blur', 'textarea', function () {
+    var text = $(this)
+        .val()
+        .trim();
+
+        var userTextP = $("<p>")
+        .addClass("description")
+        .text(text);
+
+
+    $(this).replaceWith(userTextP);
+})
