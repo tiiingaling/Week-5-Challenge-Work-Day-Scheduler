@@ -1,12 +1,3 @@
-//core features
-//date at the top
-//time blocks for the day (9//5?)
-//blocks colour coded for past present future
-//can enter event (text) when clicking onto block
-//press the save button to save to localStorage
-//saved events persist when refreshing
-
-
 var currentDayEl = $('#currentDay');
 var containerEl = $('.container');
 
@@ -28,12 +19,12 @@ const workDayHours = [
 //target the div that holds the time block hour
 var timeBlockHour = $('col-1 hour')
 
+//declare variable for task
+var task = $('.description')
+//empty object
+var tasks = {};
 
-//compare each time block to the current time
-// - if after, if present, add class of 'future' to timeBlockEventSpace
-// - if equal, add class of 'present' to timeBlockEventSpace
-// - else add class of past to timeBlockEventSpace
-
+//compare timeblock to current time to assign colour codes
 function auditTimeBlock(timeBlockEventSpace) {
     //retrieve the hour from the div and convert it to the x'th hour of the day
     var currentTimeBlockHour = moment($(timeBlockHour).text().trim(), 'hA').hour();
@@ -53,22 +44,44 @@ function auditTimeBlock(timeBlockEventSpace) {
     }
 }
 
+//loads tasks from save
+function loadTask() {
+
+    for (var i = 0; i < workDayHours.length; i++) {
+        let task = localStorage.getItem(workDayHours[i])
+
+        if (task) {
+            $('#' + (i + 9)).siblings().first().children().text(task);
+        }
+    }
+}
+// create function to save task
+function saveTask(hour, task) {
+    localStorage.setItem(hour, task);
+}
+
 //add time blocks for each hour (3 columns in 9 rows: 9AM to 5PM) format for 9AM is hA
 for (var i = 0; i < workDayHours.length; i++) {
 
     //add div with class row
     var timeBlockRow = $('<div>')
         .addClass('row time-block')
+        .attr({
+            id: 'row-' + (i + 9)
+        })
 
     // add 1 div with class hour
     var timeBlockHour = $('<div>')
         .addClass('col-1 hour')
         .text(workDayHours[i])
+        .attr({
+            id: i + 9
+        })
 
     var timeBlockEventSpace = $('<div>')
         .addClass('col-10')
         .attr({
-            id: 'Hour-' + i
+            id: 'time-block-' + (i + 9)
         });
 
     //adds in description of the schedule
@@ -83,9 +96,21 @@ for (var i = 0; i < workDayHours.length; i++) {
     var saveBtn = $('<button>')
         .addClass('col-1 saveBtn')
         .attr({
-            id: 'save-button',
+            id: 'save-button-' + (i + 9),
             type: 'button',
-        });
+        })
+
+        //function upon clicking save btn to save to storage
+    .on('click', function () {
+        var hour = $(this).siblings().first().text();
+        // retrieve the value in <p> element
+        var task = $(this).siblings().last().text();
+
+        saveTask(hour, task)
+
+        console.log(hour);
+        console.log(task);
+    })
 
     // add save icon
     var saveIcon = $('<i>')
@@ -101,6 +126,7 @@ for (var i = 0; i < workDayHours.length; i++) {
 }
 
 
+//cick timeblock to edit text content
 $('.col-10').on('click', 'p', function () {
     //logs the click to check functionality
     console.log('clicked');
@@ -130,3 +156,5 @@ $('.col-10').on('blur', 'textarea', function () {
 
     $(this).replaceWith(userTextP);
 })
+
+loadTask();
