@@ -21,13 +21,15 @@
 //press the save button to save to localStorage
 //saved events persist when refreshing
 
-const currentDayEl = document.getElementById('currentDay')
-const containerEl = document.getElementsByClassName('container');
 
-var currentDay = moment().format('MMMM Do YYYY, h:mm:ss a');
-//currentDayEl.text(currentDay); not working for some reason
 
-var workDayHours = [
+var currentDayEl = $('#currentDay');
+var containerEl = $('.container');
+
+//get current time in hA format
+var currentHour = moment().hour();
+
+const workDayHours = [
     moment().hour(9).format('hA'),
     moment().hour(10).format('hA'),
     moment().hour(11).format('hA'),
@@ -38,6 +40,34 @@ var workDayHours = [
     moment().hour(16).format('hA'),
     moment().hour(17).format('hA')
 ];
+
+//target the div that holds the time block hour
+var timeBlockHour = $('col-1 hour')
+
+
+//compare each time block to the current time
+// - if after, if present, add class of 'future' to timeBlockEventSpace
+// - if equal, add class of 'present' to timeBlockEventSpace
+// - else add class of past to timeBlockEventSpace
+
+function auditTimeBlock(timeBlockEventSpace) {
+    //retrieve the hour from the div and convert it to the x'th hour of the day
+    var currentTimeBlockHour = moment($(timeBlockHour).text().trim(), 'hA').hour();
+
+    //remove class of 'past present future
+    $(timeBlockEventSpace).removeClass('past present future');
+
+    //if currentTimeBlockHour
+    if (currentTimeBlockHour > currentHour) {
+        $(timeBlockEventSpace).addClass('future');
+    }
+    else if (currentTimeBlockHour === currentHour) {
+        $(timeBlockEventSpace).addClass('present');
+    }
+    else {
+        $(timeBlockEventSpace).addClass('past');
+    }
+}
 
 //add time blocks for each hour (3 columns in 9 rows: 9AM to 5PM) format for 9AM is hA
 for (var i = 0; i < workDayHours.length; i++) {
@@ -54,6 +84,12 @@ for (var i = 0; i < workDayHours.length; i++) {
     // add 1 div with class time-block
     var timeBlockEventSpace = $('<div>')
         .addClass('col-10 description')
+        .attr({
+            id: 'Hour-' + i
+        });
+
+    //check time
+    auditTimeBlock(timeBlockEventSpace);
 
     // add a button with class saveBtn
     var saveBtn = $('<button>')
