@@ -21,6 +21,13 @@ textarea {
   border-bottom: 10px solid black;
 }
 
+#currentDay {
+  font-weight: bold;
+  color: purple;
+  font-size: 30pt;
+  margin-top: 50px;
+}
+
 .description {
   white-space: pre-wrap;
   /*height and width stretches clickbox to whole block otherwise it was hard to click*/

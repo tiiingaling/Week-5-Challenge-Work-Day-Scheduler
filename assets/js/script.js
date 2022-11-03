@@ -4,6 +4,8 @@ var containerEl = $('.container');
 //get current time in hA format
 var currentHour = moment().hour();
 
+
+
 const workDayHours = [
     moment().hour(9).format('hA'),
     moment().hour(10).format('hA'),
@@ -18,6 +20,9 @@ const workDayHours = [
 
 //target the div that holds the time block hour
 var timeBlockHour = $('col-1 hour')
+
+var currentDay = moment().format('dddd, MMMM Do');
+currentDayEl.text(currentDay);
 
 //declare variable for task
 var task = $('.description')
